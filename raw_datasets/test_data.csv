@@ -1,10 +1,10 @@
-Country	Gross primary education enrollment (%)	Gross tertiary education enrollment (%)
-Afghanistan	104.00%	9.70%
-Albania	107.00%	55.00%
-Algeria	109.90%	51.40%
-Andorra	106.40%	
-Angola	113.50%	9.30%
-Antigua and Barbuda	105.00%	24.80%
-Argentina	109.70%	90.00%
-Armenia	92.70%	54.60%
-Australia	100.30%	113.10%
+Country,Gross primary education enrollment,Gross tertiary education enrollment
+Afghanistan,104.00,9.70
+Albania,107.00,55.00
+Algeria,109.90,51.40
+Andorra,106.40,
+Angola,113.50,9.30
+Antigua and Barbuda,105.00,24.80
+Argentina,109.70,90.00
+Armenia,92.70,54.60
+Australia,100.30,113.10
