@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Top 10 Gross Enrollment Ratio Visualization</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    .bar {
+      fill: steelblue;
+    }
+
+    .bar:hover {
+      fill: orange;
+    }
+
+    .axis-x text {
+      font-size: 10px;
+    }
+
+    .axis-y text {
+      font-size: 1p0x;
+    }
+  </style>
+</head>
+<body>
+
+<script>
+  // Load data from URL
+  d3.csv("https://raw.githubusercontent.com/jwolfe972/csce_5320_project/main/raw_datasets/test_data.csv").then(function(data) {
+
+    // Convert enrollment data from strings to numbers
+    data.forEach(function(d) {
+      d['Gross primary education enrollment'] = +d['Gross primary education enrollment'];
+      d['Gross tertiary education enrollment'] = +d['Gross tertiary education enrollment'];
+    });
+
+    // Sort data by primary education enrollment in descending order
+    // data.sort((a, b) => b['Gross primary education enrollment (%)'] - a['Gross primary education enrollment (%)']);
+    data.sort((a, b) => d3.descending(a['Gross primary education enrollment'], b['Gross primary education enrollment']));
+    
+
+    // Select top 10 countries
+    const top10 = data.slice(0, 5);
+
+    console.log(top10)
+    // Set up SVG dimensions
+    const svgWidth = 1000;
+    const svgHeight = 500;
+    const margin = { top: 50, right: 300, bottom: 100, left: 50 };
+    const chartWidth = svgWidth - margin.left - margin.right;
+    const chartHeight = svgHeight - margin.top - margin.bottom;
+
+    // Create SVG
+    const svg = d3.select("body")
+      .append("svg")
+      .attr("width", svgWidth)
+      .attr("height", svgHeight);
+
+    // Create chart group
+    const chartGroup = svg.append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    // Define scales
+    const xScale = d3.scaleBand()
+      .domain(top10.map(d => d.Country))
+      .range([0, chartWidth])
+      .padding(0.1);
+
+    const yScale = d3.scaleLinear()
+      .domain([0, d3.max(top10, d => +d['Gross primary education enrollment (%)'])])
+      .nice()
+      .range([chartHeight, 0]);
+
+    // Create axes
+    const xAxis = d3.axisBottom(xScale);
+    const yAxis = d3.axisLeft(yScale);
+
+    // Draw x-axis
+    chartGroup.append("g")
+      .attr("class", "axis-x")
+      .attr("transform", `translate(0,${chartHeight})`)
+      .call(xAxis)
+      .selectAll("text")
+      .attr("transform", "rotate(-45)")
+      .style("text-anchor", "end");
+
+    // Draw y-axis
+    chartGroup.append("g")
+      .attr("class", "axis-y")
+      .call(yAxis);
+
+    // Draw bars for primary enrollment
+    chartGroup.selectAll(".bar-primary")
+      .data(top10)
+      .enter().append("rect")
+      .attr("class", "bar-primary")
+      .attr("x", d => xScale(d.Country))
+      .attr("y", d => yScale(+d['Gross primary education enrollment (%)']))
+      .attr("width", xScale.bandwidth())
+      .attr("height", d => chartHeight - yScale(+d['Gross primary education enrollment (%)']))
+      .attr("fill", "steelblue");
+
+    // Add legend
+    const legend = svg.append("g")
+      .attr("transform", `translate(${svgWidth - margin.right},${margin.top})`);
+
+    legend.append("rect")
+      .attr("x", 0)
+      .attr("y", 0)
+      .attr("width", 10)
+      .attr("height", 10)
+      .attr("fill", "steelblue");
+
+    legend.append("text")
+      .attr("x", 15)
+      .attr("y", 10)
+      .attr("dy", "0.75em")
+      .text("Primary Enrollment (Top 10)");
+
+  });
+
+</script>
+</body>
+</html>
